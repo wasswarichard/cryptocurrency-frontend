@@ -106,7 +106,6 @@ const Transactions = () => {
             setAmountFromValue('');
             setAmountToValue('');
          }
-         console.log(response);
       } catch (e) {
          console.log(e);
       }

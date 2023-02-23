@@ -1,10 +1,12 @@
 import { AppBar, Typography, Grid, Button } from '@mui/material';
 import React, { FC } from 'react';
 import './index.sass';
+import { useAuth } from '../../ProtectedRoutes';
 
 export interface IHeaderProps {}
 
 const Header: FC<IHeaderProps> = () => {
+   const isAuth = useAuth();
    return (
       <AppBar position="relative" className="appBar">
          <Grid container className="headerContainer">
@@ -14,17 +16,19 @@ const Header: FC<IHeaderProps> = () => {
                </Typography>
             </Grid>
             <Grid item xs={1}>
-               <Button
-                  variant="outlined"
-                  color="success"
-                  size="large"
-                  onClick={() => {
-                     localStorage.removeItem('authentication');
-                     window.location.reload();
-                  }}
-               >
-                  LogOut
-               </Button>
+               {isAuth && (
+                  <Button
+                     variant="outlined"
+                     color="success"
+                     size="large"
+                     onClick={() => {
+                        localStorage.removeItem('authentication');
+                        window.location.reload();
+                     }}
+                  >
+                     LogOut
+                  </Button>
+               )}
             </Grid>
          </Grid>
       </AppBar>

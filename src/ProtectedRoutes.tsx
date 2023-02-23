@@ -1,6 +1,6 @@
 import { Outlet, Navigate } from 'react-router-dom';
 
-const useAuth = () => {
+export const useAuth = () => {
    const authentication = localStorage.getItem('authentication');
    // @ts-ignore
    const user = JSON.parse(authentication);

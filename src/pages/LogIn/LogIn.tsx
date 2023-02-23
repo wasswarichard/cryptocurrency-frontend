@@ -34,6 +34,7 @@ const LogIn = () => {
          if (data.email) {
             localStorage.setItem('authentication', JSON.stringify({ loggedIn: true }));
             navigate('/');
+            window.location.reload()
          }
       },
    });
