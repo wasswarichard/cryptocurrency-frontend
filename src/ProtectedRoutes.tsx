@@ -1,7 +1,9 @@
 import { Outlet, Navigate } from 'react-router-dom';
 
 const useAuth = () => {
-   const user = { loggedIn: false };
+   const authentication = localStorage.getItem("authentication");
+   // @ts-ignore
+   const user = JSON.parse(authentication);
    return user && user.loggedIn;
 };
 const ProtectedRoutes = () => {

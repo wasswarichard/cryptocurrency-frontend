@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,20 +11,35 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axios from 'axios';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const theme = createTheme();
 
 const SignUp = () => {
-   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      const data = new FormData(event.currentTarget);
-      console.log({
-         lastName: data.get('lastName'),
-         firstName: data.get('firstName'),
-         email: data.get('email'),
-         password: data.get('password'),
-      });
-   };
+   const navigate = useNavigate();
+
+   const formik = useFormik({
+      initialValues: {
+         lastName: '',
+         firstName: '',
+         email: '',
+         password: '',
+      },
+      validationSchema: Yup.object({
+         lastName: Yup.string().max(15, 'Must be 15 characters or less').required('Required'),
+         firstName: Yup.string().max(15, 'Must be 15 characters or less').required('Required'),
+         email: Yup.string().email('Invalid email address').required('Required'),
+         password: Yup.string().max(15, 'Must be 15 characters or less').required('Required'),
+      }),
+      onSubmit: async (values) => {
+         const result = await axios.post('/api/user/create', values);
+         if (result.status === 200) {
+            navigate('/login');
+         }
+      },
+   });
 
    return (
       <ThemeProvider theme={theme}>
@@ -43,7 +59,7 @@ const SignUp = () => {
                <Typography component="h1" variant="h5">
                   Sign up
                </Typography>
-               <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+               <form onSubmit={formik.handleSubmit} style={{ marginTop: '3px' }}>
                   <Grid container spacing={2}>
                      <Grid item xs={12} sm={6}>
                         <TextField
@@ -54,6 +70,11 @@ const SignUp = () => {
                            id="firstName"
                            label="First Name"
                            autoFocus
+                           value={formik.values.firstName}
+                           onChange={formik.handleChange}
+                           onBlur={formik.handleBlur}
+                           error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                           helperText={formik.touched.firstName && formik.errors.firstName}
                         />
                      </Grid>
                      <Grid item xs={12} sm={6}>
@@ -64,6 +85,11 @@ const SignUp = () => {
                            label="Last Name"
                            name="lastName"
                            autoComplete="family-name"
+                           value={formik.values.lastName}
+                           onChange={formik.handleChange}
+                           onBlur={formik.handleBlur}
+                           error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                           helperText={formik.touched.lastName && formik.errors.lastName}
                         />
                      </Grid>
                      <Grid item xs={12}>
@@ -74,6 +100,11 @@ const SignUp = () => {
                            label="Email Address"
                            name="email"
                            autoComplete="email"
+                           value={formik.values.email}
+                           onChange={formik.handleChange}
+                           onBlur={formik.handleBlur}
+                           error={formik.touched.email && Boolean(formik.errors.email)}
+                           helperText={formik.touched.email && formik.errors.email}
                         />
                      </Grid>
                      <Grid item xs={12}>
@@ -85,6 +116,11 @@ const SignUp = () => {
                            type="password"
                            id="password"
                            autoComplete="new-password"
+                           value={formik.values.password}
+                           onChange={formik.handleChange}
+                           onBlur={formik.handleBlur}
+                           error={formik.touched.password && Boolean(formik.errors.password)}
+                           helperText={formik.touched.password && formik.errors.password}
                         />
                      </Grid>
                   </Grid>
@@ -98,7 +134,7 @@ const SignUp = () => {
                         </Link>
                      </Grid>
                   </Grid>
-               </Box>
+               </form>
             </Box>
          </Container>
       </ThemeProvider>
