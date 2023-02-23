@@ -1,10 +1,8 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -19,6 +17,7 @@ import * as Yup from 'yup';
 const theme = createTheme();
 const LogIn = () => {
    const navigate = useNavigate();
+   const [loginError, setLoginError] = useState(false);
    const formik = useFormik({
       initialValues: {
          email: '',
@@ -29,8 +28,10 @@ const LogIn = () => {
          password: Yup.string().max(15, 'Must be 15 characters or less').required('Required'),
       }),
       onSubmit: async (values) => {
-         const result = await axios.post('/api/user/login', values);
-         if (result.status === 200) {
+         setLoginError(false);
+         const { data } = await axios.post('/api/user/login', values);
+         if (!data.email) setLoginError(true);
+         if (data.email) {
             localStorage.setItem('authentication', JSON.stringify({ loggedIn: true }));
             navigate('/');
          }
@@ -56,6 +57,9 @@ const LogIn = () => {
                   Sign in
                </Typography>
                <form onSubmit={formik.handleSubmit} style={{ marginTop: '3px' }}>
+                  {loginError && (
+                     <Typography style={{ color: 'red' }}>Invalid credentials</Typography>
+                  )}
                   <TextField
                      margin="normal"
                      required
