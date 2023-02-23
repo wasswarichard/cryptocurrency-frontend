@@ -65,7 +65,7 @@ const currencyOptions: readonly currencyOption[] = [
    },
 ];
 
-const backendUrl = 'http://localhost:3001';
+const backendUrl = 'https://nestjs-backend-production-a279.up.railway.app';
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 const Transactions = () => {
    const [currencyFrom, setCurrencyFrom] = useState<string>('');
